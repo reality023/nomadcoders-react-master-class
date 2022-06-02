@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { fetchCoinInfo, fetchCoinTickers } from "../api";
 import Chart from "./Chart";
 import Price from "./Price";
+import {Helmet} from "react-helmet";
 
 interface RouteParams {
     coinId:string;
@@ -150,7 +151,10 @@ function Coin() {
         ["info", coinId], () => fetchCoinInfo(coinId)
     );
     const {isLoading: tickersLoading, data: tickersData} = useQuery<PriceData>(
-        ["tickers", coinId], () => fetchCoinTickers(coinId)
+        ["tickers", coinId], () => fetchCoinTickers(coinId),
+        {
+            refetchInterval: 5000,
+        }
     );
 
     // const [ loading, setLoading ] = useState(true);
@@ -173,6 +177,9 @@ function Coin() {
 
     return (
         <Container>
+            <Helmet>
+                <title>{state?.name ? state.name : loading ? "Loading" : infoData?.name }</title>
+            </Helmet>
             <Header>
                 <Title>{state?.name ? state.name : loading ? "Loading" : infoData?.name }</Title>
             </Header>
@@ -191,7 +198,7 @@ function Coin() {
                         </OverviewItem>
                         <OverviewItem>
                         <span>Open Source:</span>
-                        <span>{infoData?.open_source ? "Yes" : "No"}</span>
+                        <span>${tickersData?.quotes.USD.price.toFixed(3)}</span>
                         </OverviewItem>
                     </Overview>
                     <Description>{infoData?.description}</Description>

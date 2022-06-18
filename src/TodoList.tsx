@@ -38,17 +38,25 @@ interface IForm {
   username: string;
   password: string;
   password1: string;
+  extraError?: string;
 }
 
 function TodoList () {
   // const { register, watch, handleSubmit } = useForm();
-  const { register, handleSubmit, formState:{errors} } = useForm<IForm>({
+  const { register, handleSubmit, formState:{errors}, setError } = useForm<IForm>({
     defaultValues: {
       email: "@naver.com"
     }
   });
   const onValid = ( data:any ) => {
-    console.log(data);
+    if (data.password !== data.password1) {
+      setError(
+        "password1",
+        { message: "Password are not the same" },
+        { shouldFocus: true }
+      )
+    }
+    // setError("extraError", { message: "Server offline." })
   };
   console.log(errors);
   return (
@@ -61,12 +69,16 @@ function TodoList () {
                 pattern: {
                   value: /^[A-Za-z0-9._%+-]+@naver.com$/,
                   message: "Only naver.com emails allowed",
+
                 }
             }
           )} type="text" placeholder="Email" 
         />
         <span>{errors.email?.message}</span>
-        <input {...register("firstName", { required: "write here", minLength: 5 })} type="text" placeholder="First Name" />
+        <input {...register("firstName", { required: "write here", minLength: 5, validate: {
+          noNico: value => value.includes("nico") ? "no nicos allowed" : true,
+          noNIck: value => value.includes("nick") ? "no nick allowed" : true,
+        }})} type="text" placeholder="First Name" />
         <span>{errors.firstName?.message}</span>
         <input {...register("lastName", { required: "write here", minLength: 5 })} type="text" placeholder="Last Name" />
         <span>{errors.lastName?.message}</span>
@@ -86,6 +98,7 @@ function TodoList () {
           type="text" placeholder="Password1" />
         <span>{errors.password1?.message}</span>
         <button>Add</button>
+        <span>{errors.extraError?.message}</span>
       </form>
     </div>
   );

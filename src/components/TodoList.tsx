@@ -1,21 +1,29 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRecoilValue } from "recoil";
-import { todoState } from "../atoms";
+import { todoSelector, todoState } from "../atoms";
 import CreateTodo from "./CreateTodo";
 import Todo from "./Todo";
 
 
 function TodoList () {
-  const todos = useRecoilValue(todoState);
-  console.log(todos);
+  const [todo, doing, done] = useRecoilValue(todoSelector);
   return (
     <div style={{color: "white"}}>
-      <h1>To Do</h1>
+      <h1>To Dos</h1>
       <hr />
       <CreateTodo />
+      <h2>To Do</h2>
       <ul>
-        {todos.map(todo => <Todo key={todo.id} {...todo} />)}
+        {todo.map(todo => <Todo key={todo.id} {...todo} />)}
+      </ul>
+      <h2>Doing</h2>
+      <ul>
+        {doing.map(todo => <Todo key={todo.id} {...todo} />)}
+      </ul>
+      <h2>Done</h2>
+      <ul>
+        {done.map(todo => <Todo key={todo.id} {...todo} />)}
       </ul>
     </div>
   );

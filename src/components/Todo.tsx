@@ -10,7 +10,11 @@ function Todo ({text, category, id}: ITodo) {
   const onClick = (event:React.MouseEvent<HTMLButtonElement>) => {
     const { currentTarget: { name } } = event; // 구조분해 할당
     setTodos(oldTodos => {
-      return oldTodos;
+      const targetIndex = oldTodos.findIndex(todo => todo.id === id);
+      const oldTodo = oldTodos[targetIndex];
+      const newTodo = {text, id, category: name as any};
+
+      return [...oldTodos.slice(0, targetIndex), newTodo, ...oldTodos.slice(targetIndex + 1)];
     });
   }
   return (

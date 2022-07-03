@@ -11,14 +11,16 @@ export const todoState = atom<ITodo[]>({
   default: [],
 });
 
+export const categoryState = atom({
+  key: "category",
+  default: "TODO"
+});
+
 export const todoSelector = selector({
   key: "todoSelector",
   get: ({get}) => {
     const todos = get(todoState);
-    return [
-      todos.filter(todo => todo.category === "TODO"),
-      todos.filter(todo => todo.category === "DOING"),
-      todos.filter(todo => todo.category === "DONE")
-    ];
+    const category = get(categoryState);
+    return todos.filter(todo => todo.category === category);
   }
 });
